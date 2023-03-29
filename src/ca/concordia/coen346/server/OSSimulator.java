@@ -16,16 +16,20 @@ public class OSSimulator extends Thread{
 
     private int currClient = 0;
 
-    public OSSimulator (){
+    private PIDManager pidmanager;
 
+    public OSSimulator () throws Exception {
+        pidmanager = new PIDManager();
     }
 
     public int createProcess(Socket client) throws Exception {
         if(numClients == MAX_PROCESSES){
             return -1;
         }
+        int pid = pidmanager.allocatePid();
         //get id and assign to that position
-        clients[numClients++] = new Process(numClients-1, client, buffer);
+        clients[numClients++] = new Process(pid, client, buffer);
+
         //add to queue
         System.out.println("Process created" + numClients);
         return 0;
