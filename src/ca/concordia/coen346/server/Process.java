@@ -21,6 +21,7 @@ public class Process {
         this.writer = new PrintWriter(socket.getOutputStream(), true);
         this.buffer = buffer;
         this.processId = id;
+        // writing the PID to the client
         writer.println(processId);
     }
 
