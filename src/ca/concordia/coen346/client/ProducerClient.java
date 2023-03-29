@@ -21,7 +21,7 @@ public class ProducerClient {
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             //get Id
             String fromServer = reader.readLine();
-            System.out.println(fromServer);
+            System.out.println("PID: " + fromServer);
             id = Integer.parseInt(fromServer);
 
             //wait for signal to start
