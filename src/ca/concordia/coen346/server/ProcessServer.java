@@ -7,7 +7,7 @@ import java.net.Socket;
 public class ProcessServer {
 
     private static OSSimulator simulator;
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception {
         simulator = new OSSimulator();
         simulator.start();
         try {
