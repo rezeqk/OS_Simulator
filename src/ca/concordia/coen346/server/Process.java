@@ -66,6 +66,10 @@ public class Process {
 
     }
 
+    public  int getPID(){
+        return processId;
+    }
+
     public void getItem(int position){
         int item = buffer.getNextItem(position);
         //send to client
