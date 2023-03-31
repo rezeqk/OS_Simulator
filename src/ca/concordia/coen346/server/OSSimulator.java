@@ -5,7 +5,7 @@ import java.net.Socket;
 
 public class OSSimulator extends Thread{
 
-    private final static int MAX_PROCESSES = 2;
+    private final static int MAX_PROCESSES = 750;
 
 
     private Process[] clients = new Process[MAX_PROCESSES];
@@ -35,6 +35,8 @@ public class OSSimulator extends Thread{
         return 0;
     }
 
+
+
     public Process schedule(){
         //Select next process
         currClient = 1 - currClient;
@@ -51,6 +53,12 @@ public class OSSimulator extends Thread{
                 int result = client.run(1);
                 if (result == -1) {
                     //delete process from queue and processes
+                    //release PID
+                    try {
+                        pidmanager.releasePid(client.getPID());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                     clients[0] = null;
                 }else{
                     System.out.println("Result: "+ result);
