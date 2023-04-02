@@ -35,6 +35,8 @@ public class Process {
                 String instruction = reader.readLine();
                 System.out.println(instruction);
                 if(instruction.equals(NUM_ITEMS)){
+                    System.out.println("instruction to get num items received");
+                    System.exit(1);
                     getNumberofItems();
                 }
                 else if(instruction.equals(GET_ITEM)){
@@ -56,6 +58,11 @@ public class Process {
         return 0;
     }
 
+    // function to write messages to client
+    public void messager(String message){
+            writer.println(message);
+    }
+
     public void getNumberofItems() throws IOException {
         System.out.println("Number of items");
         int numItems = buffer.readCount();
@@ -74,4 +81,5 @@ public class Process {
         int item = buffer.getNextItem(position);
         //send to client
     }
+    public void insertItem(int item, int pos){buffer.insertItem(item, pos);}
 }

@@ -1,17 +1,17 @@
 package ca.concordia.coen346.server;
 
-import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class OSSimulator extends Thread{
 
-    private final static int MAX_PROCESSES = 750;
+    private final static int MAX_PROCESSES = 20;
 
 
-    private Process[] clients = new Process[MAX_PROCESSES];
+    private ArrayList<Process> queue = new ArrayList<>(MAX_PROCESSES); //ready queue for process
 
     private Buffer buffer = new Buffer();
-    private int numClients = 0;
+    private int numProcesses = 0;
 
 
     private int currClient = 0;
@@ -20,18 +20,21 @@ public class OSSimulator extends Thread{
 
     public OSSimulator () throws Exception {
         pidmanager = new PIDManager();
+
     }
 
-    public int createProcess(Socket client) throws Exception {
-        if(numClients == MAX_PROCESSES){
+    public int createProcess(Socket clientSocket) throws Exception {
+        if(numProcesses == MAX_PROCESSES){
             return -1;
         }
         int pid = pidmanager.allocatePid();
         //get id and assign to that position
-        clients[numClients++] = new Process(pid, client, buffer);
+        Process process = new Process(pid, clientSocket, buffer);
+        queue.add(process);
+        numProcesses++;
 
         //add to queue
-        System.out.println("Process created" + numClients);
+        System.out.println("Process created" + numProcesses);
         return 0;
     }
 
@@ -39,8 +42,10 @@ public class OSSimulator extends Thread{
 
     public Process schedule(){
         //Select next process
-        currClient = 1 - currClient;
-        return clients[currClient];
+        if(queue.size()==0) return null;
+        if(currClient >= queue.size()) currClient =0;
+
+        return queue.get(currClient);
     }
 
     public void run(){
@@ -56,10 +61,11 @@ public class OSSimulator extends Thread{
                     //release PID
                     try {
                         pidmanager.releasePid(client.getPID());
+                        queue.remove(client.getPID());
+                        client.messager("The process that is terminated " +client.getPID()+ " the position is also "+ client.getPID());
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-                    clients[0] = null;
                 }else{
                     System.out.println("Result: "+ result);
                 }

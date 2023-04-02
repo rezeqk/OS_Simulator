@@ -4,8 +4,8 @@ import java.util.BitSet;
 
 public class PIDManager {
 
-    private static final int MIN_PID = 300;
-    private static final int MAX_PID = 500;
+    private static final int MIN_PID = 0;
+    private static final int MAX_PID = 200;
     BitSet pidMap;
 
     /*Constructor */
@@ -15,7 +15,7 @@ public class PIDManager {
     }
     /*Tracks*/
     void allocateMap() throws Exception{
-        pidMap = new BitSet(200);
+        pidMap = new BitSet(MAX_PID);
     }
 
     public int allocatePid() throws Exception{
@@ -25,7 +25,7 @@ public class PIDManager {
                 break;
             }
         }
-        int pid = 300 + index;
+        int pid = index;
         if(pid > MAX_PID || pid < MIN_PID){ // no space for new pids
             throw new Exception("Unable to allocate pid, all PID have been allocated");
         }

@@ -38,9 +38,6 @@ public class ProducerClient {
                 }
                 i++;
             }
-            if (fromServer.equals("RUN")) {
-                writer.println(Process.TERMINATE);
-            }
 
         }catch (UnknownHostException ex) {
 

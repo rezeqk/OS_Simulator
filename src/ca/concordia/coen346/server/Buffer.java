@@ -10,6 +10,8 @@ public class Buffer {
 
 
     public Buffer(){
+        buffer[0] = 1;buffer[1] = 1;buffer[2] = 1;buffer[3] = 1;buffer[4] = 1;buffer[5] = 1;buffer[6] = 1;
+
     }
 
     public int readCount(){
