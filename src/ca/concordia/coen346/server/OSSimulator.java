@@ -18,22 +18,23 @@ public class OSSimulator extends Thread{
 
     private PIDManager pidmanager;
 
+    private Scheduler scheduler;
+
     public OSSimulator () throws Exception {
         pidmanager = new PIDManager();
-
+        scheduler = new Scheduler(MAX_PROCESSES);
     }
 
-    public int createProcess(Socket clientSocket) throws Exception {
+
+    public int createProcess(Socket clientEndPoint) throws Exception {
         if(numProcesses == MAX_PROCESSES){
             return -1;
         }
         int pid = pidmanager.allocatePid();
         //get id and assign to that position
-        Process process = new Process(pid, clientSocket, buffer);
-        queue.add(process);
-        numProcesses++;
-
+        Process process = new Process(pid, clientEndPoint, buffer);
         //add to queue
+        scheduler.addProcess(process);
         System.out.println("Process created" + numProcesses);
         return 0;
     }
@@ -42,10 +43,7 @@ public class OSSimulator extends Thread{
 
     public Process schedule(){
         //Select next process
-        if(queue.size()==0) return null;
-        if(currClient >= queue.size()) currClient =0;
-
-        return queue.get(currClient);
+        return  scheduler.PickNextTask();
     }
 
     public void run(){
