@@ -72,8 +72,8 @@ public class OSSimulator extends Thread{
                         //release the pid
                         pidmanager.releasePid(client.getPID());
 
-                        client.messager("The process that is terminated " +client.getPID()+ " the position is also "+ client.getPID());
-                        Thread.sleep(10000);
+                        client.sendMessage("The process that is terminated " +client.getPID()+ " the position is also "+ client.getPID());
+                        Thread.sleep(5000);
                     } catch (Exception e) {
                         System.out.println("Some error ocurred");
                         throw new RuntimeException(e);

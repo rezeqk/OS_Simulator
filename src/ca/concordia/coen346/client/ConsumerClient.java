@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+//TODO :  Add event listener
 public class ConsumerClient {
 
     ConsumerClient(){

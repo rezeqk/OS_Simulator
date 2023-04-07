@@ -27,6 +27,7 @@ public class Process {
         System.out.println("Process " + processId + " is created");
     }
 
+    // TODO: 2023-04-06 read and write to buffer 
     public int run(int times){
         System.out.println("Process " + getPID() + " is schedulled");
 
@@ -64,7 +65,7 @@ public class Process {
     }
 
     // function to write messages to client
-    public void messager(String message){
+    public void sendMessage(String message){
             writer.println(message);
     }
 
@@ -73,7 +74,10 @@ public class Process {
         int numItems = buffer.readCount();
         writer.println(numItems);
     }
+    
+    
 
+    // todo : implement the getNextItem Position 
     public void getNextItemPosition(){
 
     }
