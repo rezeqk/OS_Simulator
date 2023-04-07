@@ -47,6 +47,10 @@ public class ConsumerClient {
                     case "next item":
                         writer.println(Process.GET_ITEM);
                         System.out.println(reader.readLine());
+
+                    case "next item position":
+                        writer.println(Process.NEXT_ITEM_POS);
+                        System.out.println(reader.readLine());
                     default:
                         writer.println("none");
                 }
