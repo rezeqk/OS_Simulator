@@ -14,17 +14,18 @@ public class ProducerClient {
         int id;
         try(Socket socket = new Socket("localhost", 8000)){
             System.out.println("Client connected");
+
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
 
             InputStream input = socket.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            //get Id
-            String fromServer = reader.readLine();
-            System.out.println("PID: " + fromServer);
-            id = Integer.parseInt(fromServer);
 
-            //wait for signal to start
+            //get the pid assigned from the server
+            String fromServer = reader.readLine();
+            id = Integer.parseInt(fromServer);
+            System.out.println("PID: " + id);
+
             fromServer = reader.readLine();
             System.out.println(fromServer);
             int i = 500;

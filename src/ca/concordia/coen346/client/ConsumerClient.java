@@ -26,7 +26,6 @@ public class ConsumerClient {
                 // reads ID
                 String ID = reader.readLine();
 
-                System.out.println("THE ID is " + ID);
                 System.out.println("New process created with ID: " + ID);
                 //get signal instruction from the server
 //                 String instructionFromServer = reader.readLine();
@@ -38,17 +37,26 @@ public class ConsumerClient {
 //                     System.out.println(reader.readLine());
 //                         System.out.println(reader.readLine());
 //                     }
+
                 System.out.println(reader.readLine());
+                writer.println("Message received");
 
-                    System.out.println("Please select the instruction you would like to send ");
-                    String instructionfromUser = scanner.nextLine();
+                System.out.println("Please select the instruction you would like to send ");
+                String instructionfromUser = scanner.nextLine();
 
-                    if (instructionfromUser.equals("getNumItems"))
-                    {
-                        System.out.println(reader.readLine());
+                switch (instructionfromUser){
+                    case "terminate" :
+                        writer.println(Process.TERMINATE);
+                        break;
+                    case "getNumItems" :
                         writer.println(Process.NUM_ITEMS);
-                        System.out.println(reader.readLine());
-                    }
+                        break;
+                    default:
+                        writer.println("none");
+                }
+                // send instructions to the server
+                writer.println(instructionfromUser);
+                System.out.println(reader.readLine());
 
 
             } catch(UnknownHostException exception){
