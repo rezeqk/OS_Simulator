@@ -37,7 +37,7 @@ public class Scheduler {
         Process temp;
         //check if queue is empty
         if (queue.isEmpty()) return -1;
-        // go through queue and get the process with the PID
+        // go through queue and get the process with the PID to remove
         for (int i= 0; i< queue.size();i++){
             //retrive process at current location
             temp = queue.get(i);

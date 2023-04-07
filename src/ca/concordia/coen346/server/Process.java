@@ -35,8 +35,7 @@ public class Process {
             try{
                 //msg to send to the client
                 String msg = "Process with ID: " + processId + " is scheduled to run on thread " + Thread.currentThread().getName();
-
-                writer.println(msg);
+                sendMessage(msg);
 
                 String instruction = reader.readLine();
                 System.out.println(instruction);
