@@ -85,7 +85,7 @@ public class Process {
     }
 
     public void getItem(int position){
-        int item = buffer.getNextItem(position);
+        int item = buffer.getNextItem();
         //send to client
     }
     public void insertItem(int item, int pos){buffer.insertItem(item, pos);}
