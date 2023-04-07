@@ -60,25 +60,8 @@ public class OSSimulator extends Thread{
                 System.out.println("Process scheduled: " + client.getPID());
                 int result = client.run(1);
 
-                // TODO : refactor this as in make a function because tmi
-                if (result == -1) {
-                    //release PID
-                    try {
-
-                        // get the pid of the process to remove
-                        int pid = client.getPID();
-                        //remove the process from the ready queue
-                        scheduler.removeProcess(pid);
-                        //release the pid
-                        pidmanager.releasePid(client.getPID());
-
-                        client.sendMessage("The process that is terminated " +client.getPID()+ " the position is also "+ client.getPID());
-                        Thread.sleep(5000);
-                    } catch (Exception e) {
-                        System.out.println("Some error ocurred");
-                        throw new RuntimeException(e);
-                    }
-                }
+                // removes process
+                if (result == -1) remove(client);
             }
 
             //wait a bit
@@ -88,5 +71,23 @@ public class OSSimulator extends Thread{
                 throw new RuntimeException(e);
             }
         }
+    }
+    public void remove(Process process){
+        try {
+
+            // get the pid of the process to remove
+            int pid = process.getPID();
+            //remove the process from the ready queue
+            scheduler.removeProcess(pid);
+            //release the pid
+            pidmanager.releasePid(process.getPID());
+
+            process.sendMessage("The process that is terminated " +process.getPID()+ " the position is also "+ process.getPID());
+            Thread.sleep(5000);
+        } catch (Exception e) {
+            System.out.println("Some error ocurred");
+            throw new RuntimeException(e);
+        }
+
     }
 }
