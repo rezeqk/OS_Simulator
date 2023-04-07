@@ -1,26 +1,37 @@
 package ca.concordia.coen346.server;
 
+import java.util.ArrayList;
+
 public class Buffer {
     private final static int BUFFER_SIZE = 10;
-
-    private int[] buffer = new int[BUFFER_SIZE];
+    private ArrayList <Integer> buffer;
     private int in;
     private int out;
     private int count;
 
+    private int index =0;
+
+
 
     public Buffer(){
-        buffer[0] = 1;buffer[1] = 1;buffer[2] = 1;buffer[3] = 1;buffer[4] = 1;buffer[5] = 1;buffer[6] = 1;
+
+        buffer =  new ArrayList<>();
 
     }
 
+    //size of buffer
+    public int size(){
+        return buffer.size();
+    }
     public int readCount(){
         return count;
     }
 
-    public int getNextItem(int pos){
-        int item = buffer[pos];
-        return item;
+    public int getNextItem(){
+        int temp =0;
+        temp = buffer.get(index);
+        buffer.remove(index);
+        return temp;
     }
 
     public void setIn(int pos){
@@ -31,8 +42,14 @@ public class Buffer {
         return in;
     }
 
+    //TODO: add code when it doesnt happen
     public void insertItem(int item, int pos){
-        buffer[pos] = item;
+        if(buffer.size() < BUFFER_SIZE){buffer.add(pos,item);}
+    }
+
+    public void removeItem(int pos){
+        buffer.remove(pos);
+
     }
 
 }
