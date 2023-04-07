@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Buffer {
     private final static int BUFFER_SIZE = 10;
     private ArrayList <Integer> buffer;
-    private int in;
     private int out;
     private int count;
 
@@ -41,11 +40,11 @@ public class Buffer {
     }
 
     public void setIn(int pos){
-        this.in = pos;
+        this.index = pos;
     }
 
     public int getNextPosition(){
-        return in;
+        return index;
     }
 
     //TODO: add code when it doesnt happen

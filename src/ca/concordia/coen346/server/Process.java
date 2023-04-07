@@ -41,14 +41,17 @@ public class Process {
                 System.out.println(instruction);
 
                 if(instruction.equals(NUM_ITEMS)){
-                    getNumberofItems();
+                    System.out.println("Number of items" + 0);
+                    int numItems = buffer.size();
+                    writer.println(numItems);
                 }
                 else if(instruction.equals(GET_ITEM)){
                     int item = buffer.getNextItem();
                     writer.println(item);
                 }
                 else if(instruction.equals(NEXT_ITEM_POS)){
-                    getNextItemPosition();
+                    int index = buffer.getNextPosition();
+                    writer.println(index);
                 }
                 else if(instruction.equals(TERMINATE)){
                     return -1;
@@ -60,14 +63,6 @@ public class Process {
         return 0;
     }
 
-
-    public void getNumberofItems() throws IOException {
-        System.out.println("Number of items" + 0);
-        int numItems = buffer.size();
-        writer.println(numItems);
-    }
-    
-    
 
     // todo : implement the getNextItem Position 
     public void getNextItemPosition(){
