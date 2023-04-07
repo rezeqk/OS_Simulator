@@ -25,7 +25,8 @@ public class Scheduler {
         return queue.get(positon++);
     }
 
-    public int addProcess (Process process){
+    public int addProcessToQueue(Process process){
+        // if queue full
         if (queue.size() == MaxProcesses)  return -1;
         //add a process
         queue.add(process);
@@ -47,6 +48,14 @@ public class Scheduler {
         return 0;
     }
 
-
+    public void printQueue(){
+        for (Process process : queue
+        ) {
+            System.out.println(process.getPID());
+        }
+    }
+    public int size(){
+        return queue.size();
+    }
 }
 
