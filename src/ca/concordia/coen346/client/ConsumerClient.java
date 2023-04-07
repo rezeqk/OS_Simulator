@@ -42,6 +42,7 @@ public class ConsumerClient {
                         break;
                     case "getNumItems" :
                         writer.println(Process.NUM_ITEMS);
+                        System.out.println(reader.readLine());
                         break;
                     case "next item":
                         writer.println(Process.NEXT_ITEM_POS);

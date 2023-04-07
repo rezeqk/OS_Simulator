@@ -61,15 +61,10 @@ public class Process {
         return 0;
     }
 
-    // function to write messages to client
-    public void sendMessage(String message){
-            writer.println(message);
-    }
 
     public void getNumberofItems() throws IOException {
-        System.out.println("Number of items");
-        int numItems = buffer.readCount();
-
+        System.out.println("Number of items" + 0);
+        int numItems = buffer.size();
         writer.println(numItems);
     }
     
@@ -95,4 +90,8 @@ public class Process {
                 "\n");
     }
 
+    // function to write messages to client
+    public void sendMessage(String message){
+        writer.println(message);
+    }
 }
