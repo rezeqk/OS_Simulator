@@ -45,7 +45,7 @@ public class ConsumerClient {
                         System.out.println(reader.readLine());
                         break;
                     case "next item":
-                        writer.println(Process.NEXT_ITEM_POS);
+                        writer.println(Process.GET_ITEM);
                         System.out.println(reader.readLine());
                     default:
                         writer.println("none");

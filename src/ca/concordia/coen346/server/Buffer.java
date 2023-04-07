@@ -16,6 +16,12 @@ public class Buffer {
     public Buffer(){
 
         buffer =  new ArrayList<>();
+        buffer.add(10);
+        buffer.add(10);
+        buffer.add(10);
+        buffer.add(10);
+        buffer.add(10);
+        buffer.add(10);
 
     }
 

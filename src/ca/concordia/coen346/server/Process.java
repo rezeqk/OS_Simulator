@@ -44,9 +44,8 @@ public class Process {
                     getNumberofItems();
                 }
                 else if(instruction.equals(GET_ITEM)){
-                    //read position from client
-                    int position=0;
-                    getItem(position);
+                    int item = buffer.getNextItem();
+                    writer.println(item);
                 }
                 else if(instruction.equals(NEXT_ITEM_POS)){
                     getNextItemPosition();
@@ -79,10 +78,6 @@ public class Process {
         return processId;
     }
 
-    public void getItem(int position){
-        int item = buffer.getNextItem();
-        //send to client
-    }
     public void insertItem(int item, int pos){buffer.insertItem(item, pos);}
     public static final void printInstruction(){
         System.out.println("Please select one of the following instruction");
