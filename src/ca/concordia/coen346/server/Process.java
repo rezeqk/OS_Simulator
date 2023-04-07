@@ -23,17 +23,23 @@ public class Process {
         this.processId = id;
         // writing the PID to the client
         writer.println(processId);
+
+        System.out.println("Process " + processId + " is created");
     }
 
     public int run(int times){
-        System.out.println("process running");
+        System.out.println("Process " + getPID() + " is schedulled");
 
         for(int i = 0; i < times; i++) {
             try{
-                writer.println("RUN");
-                System.out.println("sent");
+                //msg to send to the client
+                String msg = "Process with ID: " + processId + " is scheduled to run on thread " + Thread.currentThread().getName();
+
+                writer.println(msg);
+
                 String instruction = reader.readLine();
                 System.out.println(instruction);
+
                 if(instruction.equals(NUM_ITEMS)){
                     System.out.println("instruction to get num items received");
                     System.exit(1);
@@ -53,7 +59,6 @@ public class Process {
             }catch(IOException e){
                 return -1;
             }
-
         }
         return 0;
     }
@@ -82,4 +87,5 @@ public class Process {
         //send to client
     }
     public void insertItem(int item, int pos){buffer.insertItem(item, pos);}
+
 }

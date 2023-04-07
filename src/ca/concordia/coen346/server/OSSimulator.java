@@ -21,52 +21,71 @@ public class OSSimulator extends Thread{
     private Scheduler scheduler;
 
     public OSSimulator () throws Exception {
+        super();
+        // Set the thread's name
+        setName("OS simulator");
         pidmanager = new PIDManager();
         scheduler = new Scheduler(MAX_PROCESSES);
     }
 
 
     public int createProcess(Socket clientEndPoint) throws Exception {
-        if(numProcesses == MAX_PROCESSES){
-            return -1;
-        }
+
         int pid = pidmanager.allocatePid();
-        //get id and assign to that position
         Process process = new Process(pid, clientEndPoint, buffer);
-        //add to queue
-        scheduler.addProcess(process);
-        System.out.println("Process created" + numProcesses);
-        return 0;
+
+        // Return -1 if there is not more space and 0 if
+        return scheduler.addProcessToQueue(process);
     }
 
 
 
     public Process schedule(){
-        //Select next process
         return  scheduler.PickNextTask();
+
     }
 
     public void run(){
         while(true){
+            /*
+            Calling a blocking I/O operation: A thread can go into waiting mode when it makes
+            a blocking I/O call such as read() or write() on a socket.
+            * */
+
             //Schedule
-            System.out.println("Scheduling");
             Process client = schedule();
-            System.out.println(client);
-            if(client != null) {
+            if(client == null){
+                System.out.println("No process to schedule for now");
+            }else{
+                System.out.println("Process scheduled: " + client.getPID());
                 int result = client.run(1);
+
+                // TODO : refactor this as in make a function because tmi
                 if (result == -1) {
-                    //delete process from queue and processes
                     //release PID
                     try {
+
+                        // get the pid of the process to remove
+                        int pid = client.getPID();
+                        //remove the process from the ready queue
+                        scheduler.removeProcess(pid);
+                        //release the pid
                         pidmanager.releasePid(client.getPID());
-                        queue.remove(client.getPID());
+
                         client.messager("The process that is terminated " +client.getPID()+ " the position is also "+ client.getPID());
+                        Thread.sleep(10000);
                     } catch (Exception e) {
+                        System.out.println("Some error ocurred");
                         throw new RuntimeException(e);
                     }
-                }else{
-                    System.out.println("Result: "+ result);
                 }
+            }
+
+            //wait a bit
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
