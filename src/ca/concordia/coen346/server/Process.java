@@ -35,15 +35,12 @@ public class Process {
             try{
                 //msg to send to the client
                 String msg = "Process with ID: " + processId + " is scheduled to run on thread " + Thread.currentThread().getName();
-
-                writer.println(msg);
+                sendMessage(msg);
 
                 String instruction = reader.readLine();
                 System.out.println(instruction);
 
                 if(instruction.equals(NUM_ITEMS)){
-                    System.out.println("instruction to get num items received");
-                    System.exit(1);
                     getNumberofItems();
                 }
                 else if(instruction.equals(GET_ITEM)){
@@ -72,6 +69,7 @@ public class Process {
     public void getNumberofItems() throws IOException {
         System.out.println("Number of items");
         int numItems = buffer.readCount();
+
         writer.println(numItems);
     }
     
@@ -91,5 +89,10 @@ public class Process {
         //send to client
     }
     public void insertItem(int item, int pos){buffer.insertItem(item, pos);}
+    public static final void printInstruction(){
+        System.out.println("Please select one of the following instruction");
+        System.out.println("1 : " +
+                "\n");
+    }
 
 }
