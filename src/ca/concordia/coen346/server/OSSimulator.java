@@ -74,13 +74,11 @@ public class OSSimulator extends Thread{
     }
     public void remove(Process process){
         try {
-
-            // get the pid of the process to remove
             int pid = process.getPID();
             //remove the process from the ready queue
             scheduler.removeProcess(pid);
             //release the pid
-            pidmanager.releasePid(process.getPID());
+            pidmanager.releasePid(pid);
 
             process.sendMessage("The process that is terminated " +process.getPID()+ " the position is also "+ process.getPID());
             Thread.sleep(5000);
