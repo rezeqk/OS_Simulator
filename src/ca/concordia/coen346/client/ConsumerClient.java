@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+import static java.lang.System.exit;
+
 //TODO :  Add event listener
 public class ConsumerClient {
 
@@ -27,33 +29,39 @@ public class ConsumerClient {
                 // reads ID
                 String ID = reader.readLine();
                 System.out.println("New process created with ID: " + ID);
-                System.out.println(reader.readLine());
+                boolean run = true;
 
-                //
+                while(run){
+                    System.out.println(reader.readLine());
+                    System.out.println("Please select the instruction you would like to send ");
+                    String instructionfromUser = scanner.nextLine();
 
-                System.out.println("Please select the instruction you would like to send ");
-                String instructionfromUser = scanner.nextLine();
+                    switch (instructionfromUser){
+                        case "getNumItems" :
+                            writer.println(Process.NUM_ITEMS);
+                            System.out.println(reader.readLine());
+                            break;
+                        case "next item":
+                            writer.println(Process.GET_ITEM);
+                            System.out.println(reader.readLine());
 
-                switch (instructionfromUser){
-                    case "terminate" :
-                        writer.println(Process.TERMINATE);
-                        //read the answer
-                        System.out.println(reader.readLine());
-                        break;
-                    case "getNumItems" :
-                        writer.println(Process.NUM_ITEMS);
-                        System.out.println(reader.readLine());
-                        break;
-                    case "next item":
-                        writer.println(Process.GET_ITEM);
-                        System.out.println(reader.readLine());
-
-                    case "next item position":
-                        writer.println(Process.NEXT_ITEM_POS);
-                        System.out.println(reader.readLine());
-                    default:
-                        writer.println("none");
+                        case "next item position":
+                            writer.println(Process.NEXT_ITEM_POS);
+                            System.out.println(reader.readLine());
+                        case "terminate":
+                            writer.println(Process.TERMINATE);
+                            //read the answer
+                            System.out.println(reader.readLine());
+                            run= false;
+                            break;
+                        default:
+                            writer.println("none");
+                    }
                 }
+
+
+
+
 
             } catch(UnknownHostException exception){
                 System.out.printf("Server not found: %s%n", exception.getMessage());

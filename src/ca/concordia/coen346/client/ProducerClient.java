@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketImpl;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class ProducerClient {
 
@@ -15,6 +16,7 @@ public class ProducerClient {
         try(Socket socket = new Socket("localhost", 8000)){
             System.out.println("Client connected");
 
+            Scanner scanner =new Scanner(System.in);
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
 
@@ -26,19 +28,35 @@ public class ProducerClient {
             id = Integer.parseInt(fromServer);
             System.out.println("PID: " + id);
 
-            fromServer = reader.readLine();
-            System.out.println(fromServer);
-            int i = 500;
-            while(i<500) {
-                if (fromServer.equals("RUN")) {
-                    writer.println(Process.NUM_ITEMS);
-                    System.out.println("Sent request");
-                    int numItems = Integer.parseInt(reader.readLine());
-                    System.out.println("num:" + numItems);
-                    fromServer = reader.readLine();
+            boolean run = true;
+
+            while(run){
+                System.out.println(reader.readLine());
+                System.out.println("Please Enter The instruction you would like to write");
+                String instructionfromUser = scanner.nextLine();
+
+                switch (instructionfromUser){
+                    case "getNumitems":
+                        writer.println(Process.NUM_ITEMS);
+                        System.out.println(reader.readLine());
+                        break;
+                    case "getItemInPos":
+                        writer.println(Process.GET_ITEM);
+                        System.out.println(reader.readLine());
+                        break;
+                    case "getNextItemPos":
+                        writer.println(Process.GET_ITEM);
+                        System.out.println(reader.readLine());
+                        break;
+                    case "terminate":
+                        writer.println(Process.TERMINATE);
+                        run = false;
+                        break;
                 }
-                i++;
+
             }
+
+
 
         }catch (UnknownHostException ex) {
 
