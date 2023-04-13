@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class OSSimulator extends Thread{
 
     private final static int MAX_PROCESSES = 20;
+    private final static int quantum = 5000;
 
 
     private ArrayList<Process> queue = new ArrayList<>(MAX_PROCESSES); //ready queue for process
@@ -19,6 +20,7 @@ public class OSSimulator extends Thread{
     private PIDManager pidmanager;
 
     private Scheduler scheduler;
+    private RoundRobinExecutor executor;
 
     public OSSimulator () throws Exception {
         super();
@@ -26,6 +28,7 @@ public class OSSimulator extends Thread{
         setName("OS simulator");
         pidmanager = new PIDManager();
         scheduler = new Scheduler(MAX_PROCESSES);
+        executor = new RoundRobinExecutor(4);
     }
 
 
@@ -33,7 +36,7 @@ public class OSSimulator extends Thread{
 
         int pid = pidmanager.allocatePid();
         Process process = new Process(pid, clientEndPoint, buffer);
-
+        process.setQuantum(quantum);
         // Return -1 if there is not more space and 0 if
         return scheduler.addProcessToQueue(process);
     }
@@ -54,18 +57,19 @@ public class OSSimulator extends Thread{
 
             //Schedule
             Process client = schedule();
+            System.out.println(client);
             if(client == null){
                 System.out.println("No process to schedule for now");
             }else{
-                System.out.println("Process scheduled: " + client.getPID());
-                client.run();
+                System.out.println("Process scheduled: " + client.getPID() + " on thread " + Thread.currentThread().getName());
+                executor.execute(client);
                 // removes process
                 if (client.toBeTerminated()) remove(client);
             }
 
             //wait a bit
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

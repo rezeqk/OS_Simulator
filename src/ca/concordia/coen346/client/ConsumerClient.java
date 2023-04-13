@@ -55,8 +55,7 @@ public class ConsumerClient {
                             writer.println("none");
                     }
                 }
-
-
+                System.out.println(reader.readLine());
 
 
             } catch(UnknownHostException exception){

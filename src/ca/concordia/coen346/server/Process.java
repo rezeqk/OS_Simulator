@@ -91,8 +91,11 @@ public class Process implements Runnable{
                     writer.println(index);
                 }
                 else if(instruction.equals(TERMINATE)){
+                    toBeTerminated = true;
                 }
             }catch(IOException e){
+                toBeTerminated = true;
+                System.out.println(e.getMessage());
             }
         }
 
@@ -103,6 +106,6 @@ public class Process implements Runnable{
         this.quantum = quantum;
     }
     public boolean toBeTerminated(){
-        return toBeTerminated();
+        return toBeTerminated;
     }
 }

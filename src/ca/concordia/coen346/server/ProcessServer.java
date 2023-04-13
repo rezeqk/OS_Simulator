@@ -37,7 +37,7 @@ public class ProcessServer {
     static void printListOfThreads(){
         Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
         for (Thread thread : threads.keySet()) {
-            if(thread.getName().equals("OS simulator") || thread.getName().equals("main")){
+//            if(thread.getName().equals("OS simulator") || thread.getName().equals("main")){
                 System.out.println("Thread name: " + thread.getName());
                 System.out.println("Thread ID: " + thread.getId());
                 System.out.println("Thread state: " + thread.getState());
@@ -47,7 +47,7 @@ public class ProcessServer {
                     System.out.println("\t" + element);
                 }
                 System.out.println();
-            }
+//            }
         }
 
     }
