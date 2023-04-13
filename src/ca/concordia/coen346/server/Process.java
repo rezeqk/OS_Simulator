@@ -1,7 +1,11 @@
 package ca.concordia.coen346.server;
 
+import ca.concordia.coen346.client.ConsumerClient;
+import ca.concordia.coen346.client.ProducerClient;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Process {
 
@@ -41,7 +45,6 @@ public class Process {
                 System.out.println(instruction);
 
                 if(instruction.equals(NUM_ITEMS)){
-                    System.out.println("Number of items" + 0);
                     int numItems = buffer.size();
                     writer.println(numItems);
                 }
@@ -65,9 +68,13 @@ public class Process {
 
 
     // todo : implement the getNextItem Position 
-    public void getNextItemPosition(){
-
-    }
+//    public void writingtoBuffer(){
+//
+//    }
+//
+//    public String readingfromBuffer(){
+//        return null;
+//    }
 
     public  int getPID(){
         return processId;
