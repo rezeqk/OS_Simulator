@@ -2,13 +2,10 @@ package ca.concordia.coen346.client;
 
 import ca.concordia.coen346.server.Process;
 
-import javax.imageio.IIOException;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
-
-import static java.lang.System.exit;
 
 //TODO :  Add event listener
 public class ConsumerClient {
@@ -18,7 +15,7 @@ public class ConsumerClient {
     }
         public static void main (String []args){
             try(Socket socket = new Socket("localhost",8000)){
-                System.out.println("Cliend connected");
+                System.out.println("Client connected");
                 Scanner scanner = new Scanner(System.in);
 
                 InputStream input = socket.getInputStream();
@@ -58,7 +55,6 @@ public class ConsumerClient {
                             writer.println("none");
                     }
                 }
-
 
 
 
