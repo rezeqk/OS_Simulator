@@ -42,8 +42,9 @@ public class Buffer {
     }
 
     //TODO: add code when it doesnt happen
-    public void insertItem(int item, int pos){
-        if(buffer.size() < BUFFER_SIZE){buffer.add(pos,item);}
+    public int insertItem(int item){
+        if(buffer.size() < BUFFER_SIZE){buffer.add(item);}
+        return buffer.size();
     }
 
     public void removeItem(int pos){
