@@ -58,15 +58,14 @@ public class OSSimulator extends Thread{
                 System.out.println("No process to schedule for now");
             }else{
                 System.out.println("Process scheduled: " + client.getPID());
-                int result = client.run(1);
-
+                client.run();
                 // removes process
-                if (result == -1) remove(client);
+                if (client.toBeTerminated()) remove(client);
             }
 
             //wait a bit
             try {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
