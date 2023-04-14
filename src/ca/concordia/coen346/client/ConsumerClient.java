@@ -51,6 +51,9 @@ public class ConsumerClient {
                             System.out.println(reader.readLine());
                             run= false;
                             break;
+                        case "add":
+                           reader.readLine();
+                            System.out.println(reader.readLine());
                         default:
                             writer.println("none");
                     }

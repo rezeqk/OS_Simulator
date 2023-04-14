@@ -3,10 +3,7 @@ package ca.concordia.coen346.client;
 import ca.concordia.coen346.server.Process;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.SocketImpl;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Scanner;
 
 public class ProducerClient {
@@ -15,6 +12,10 @@ public class ProducerClient {
         int id;
         try(Socket socket = new Socket("localhost", 8000)){
             System.out.println("Client connected");
+
+
+
+
 
             Scanner scanner =new Scanner(System.in);
             OutputStream output = socket.getOutputStream();
@@ -35,6 +36,7 @@ public class ProducerClient {
                 System.out.println("Please Enter The instruction you would like to write");
                 String instructionfromUser = scanner.nextLine();
 
+
                 switch (instructionfromUser){
                     case "getNumitems":
                         writer.println(Process.NUM_ITEMS);
@@ -52,6 +54,13 @@ public class ProducerClient {
                         writer.println(Process.TERMINATE);
                         run = false;
                         break;
+
+                    case "add":
+                        writer.println("add");
+                        System.out.println("what would you like to add? ");
+                        writer.println(scanner.nextLine());
+
+                        break;
                 }
 
             }
@@ -64,7 +73,10 @@ public class ProducerClient {
 
         } catch (IOException ex) {
 
-            System.out.println("I/O error: " + ex.getMessage());
+            System.out.println("I/O error: " + ex.getMessage() + ex.getStackTrace());
+            for (int i = 0; i <ex.getStackTrace().length ; i++) {
+                System.out.println(ex.getStackTrace()[i]);
+            }
         }
 
     }
