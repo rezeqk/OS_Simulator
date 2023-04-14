@@ -36,19 +36,13 @@ public class Process implements Runnable{
 
 
     // todo : implement the getNextItem Position 
-//    public void writingtoBuffer(){
-//
-//    }
-//
-//    public String readingfromBuffer(){
-//        return null;
-//    }
+
 
     public  int getPID(){
         return processId;
     }
 
-    public void insertItem(int item, int pos){buffer.insertItem(item, pos);}
+    public void insertItem(int item, int pos){buffer.insertItem(item);}
     public static final void printInstruction(){
         System.out.println("Please select one of the following instruction");
         System.out.println("1 : " +
@@ -84,11 +78,16 @@ public class Process implements Runnable{
                 }
                 else if(instruction.equals(GET_ITEM)){
                     int item = buffer.getNextItem();
-                    writer.println(item);
+                    writer.println("Item added to buffer is: " + item);
                 }
                 else if(instruction.equals(NEXT_ITEM_POS)){
                     int index = buffer.getNextPosition();
                     writer.println(index);
+                }
+                else if(instruction.equals("add")){
+                    buffer.insertItem(Integer.parseInt(reader.readLine()));
+                   writer.println("added to buffer");
+                    System.out.println("added to buffer ");
                 }
                 else if(instruction.equals(TERMINATE)){
                 }
