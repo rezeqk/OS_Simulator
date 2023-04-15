@@ -1,28 +1,88 @@
 package ca.concordia.coen346.server;
 
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class Scheduler {
-    int positon;
+public class Scheduler extends Thread {
+    private final int MaxProcesses;
+    int pIndex; // index to keep track of the process
+    int wIndex; // index to keep track of the workers
+    boolean run;
 
-    int MaxProcesses;
-    private ArrayList <Process> queue;
+    private List<Worker> workers;
+    private Queue<Process> queue;
 
-    public Scheduler(int MaxProcesses){
-        positon = 0;
-        this.queue= new ArrayList<>();
-        this.MaxProcesses = MaxProcesses;
+    public Scheduler(int maxProcesses, int numThreads, Queue<Process> queue){
+        this.pIndex = this.wIndex = 0;
+        this.MaxProcesses = maxProcesses;
+        this.queue = queue;
+        this.run = true;
+        this.workers = new ArrayList<>(numThreads);
+        for (int i = 0; i < numThreads; i++) {
+            Worker worker = new Worker();
+            workers.add(worker);
+            worker.start();
+        }
 
     }
 
+    public void run(){
+    while (run){
+        //Loop through the list of workers and preempt
+        for (Worker worker: workers) {
+            Process process = (Process) worker.getCurrProcess();
+            if(worker.finishedTask()) {
+                freeWorker(worker, process);
 
-    public Process PickNextTask(){
+            }else if(process == null){
+                continue;
+            } else if(process.executionTime() > OSSimulator.quantum) {
+                try{
+                    worker.join(500);
+                } catch(InterruptedException e){
+                    freeWorker(worker,process);
+                    System.out.println("Exec time exceeeds maximum "+ process.executionTime());
+                }
+            }
+        }
+
+
+        //Schedule
+        // loop through the list of workers and schedule tasks
+        for (Worker worker: workers) {
+            // if a worker is available and the next task is not null, schedule it
+            if(worker.isAvailable()){
+                Process task = pickNextTask();
+                if(task !=null) worker.submit(task);
+            }
+        }
+
+        }
+    }
+
+
+    public void freeWorker(Worker worker, Process process){
+        //save the process being run
+        process = (Process) worker.getPrevProcess();
+
+        // free the worker to take on other tasks
+        try {
+            worker.setAvailable();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        queue.add(process);
+
+    }
+    public Process pickNextTask(){
         // check if queue is empty
-        if (queue.isEmpty()) return null;
-        // check position of if out of bounds
-        if (positon >= queue.size()) positon=0;
-        //picking next task
-        return queue.get(positon++);
+        if(queue.peek() == null ) return null;
+        return queue.remove();
     }
 
     public int addProcessToQueue(Process process){
@@ -34,16 +94,12 @@ public class Scheduler {
     }
 
     public int removeProcess (int pid){
-        Process temp;
         //check if queue is empty
         if (queue.isEmpty()) return -1;
-        // go through queue and get the process with the PID to remove
-        for (int i= 0; i< queue.size();i++){
-            //retrive process at current location
-            temp = queue.get(i);
-            // check if the pid of temp matches the one that should be deleted
-            if(pid == temp.getPID()) queue.remove(i);
-            break;
+        // go through queue and get the process with the PID to remover
+        for (Process temp : queue) {
+                if(pid == temp.getPID()) queue.remove(temp);
+                break;
         }
         return 0;
     }
@@ -54,8 +110,6 @@ public class Scheduler {
             System.out.println(process.getPID());
         }
     }
-    public int size(){
-        return queue.size();
-    }
+
 }
 

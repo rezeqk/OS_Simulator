@@ -1,19 +1,25 @@
 package ca.concordia.coen346.server;
 
 public class Worker extends Thread{
-    private Object lock;
-    private Runnable process;
+    private final Object lock;
+    private Runnable currProcess;
+    private Runnable prevProcess;
+    private boolean isAvailable;
+    private boolean finishedTask;
 
     public Worker(){
         this.lock = new Object();
-        this.process = null;
+        this.currProcess = null;
+        this.prevProcess = null;
+        this.isAvailable = true;
+        this.finishedTask = false;
     }
     @Override
     public void run() {
         while(true){
             synchronized (lock){
                 // if the process is not submitted, then it is null, if it is null then the lock is on wait
-                while (process == null){
+                while (this.currProcess == null){
                     try{
                         lock.wait();
                     }catch (InterruptedException e){
@@ -22,19 +28,50 @@ public class Worker extends Thread{
                         return;
                     }
                 }
-                //if the process is not null turn
-                process.run();
-                // reset
-                process = null;
 
+                // this worker cannot take other task while executing this
+                this.isAvailable = false;
+
+                //save the process;
+                this.prevProcess = currProcess;
+                //run the process
+                this.currProcess.run();
+
+                printExecTime();
+                //if task finishes before being preempted
+                this.finishedTask = true;
+                this.prevProcess = currProcess;
+                this.currProcess = null;
             }
         }
     }
 
     public void submit(Runnable process) {
         synchronized (lock){
-            this.process = process;
+            this.currProcess = process;
             this.lock.notify();
         }
+    }
+
+
+    public Runnable getPrevProcess(){return this.prevProcess;}
+    public Runnable getCurrProcess(){return this.currProcess;}
+
+    public void setAvailable() throws InterruptedException {
+        synchronized (lock){
+            lock.wait();
+        }
+        this.isAvailable = true;
+        this.finishedTask = false;
+        this.prevProcess = null;
+        this.currProcess = null;
+    }
+
+    public boolean isAvailable(){return isAvailable;}
+
+    public boolean finishedTask() {return finishedTask;}
+    public void printExecTime(){
+        Process p = (Process) currProcess;
+        System.out.println("Exec Time: " + p.executionTime());
     }
 }

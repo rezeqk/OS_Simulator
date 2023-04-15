@@ -4,64 +4,75 @@ import ca.concordia.coen346.server.Process;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 //TODO :  Add event listener
 public class ConsumerClient {
+    private static String instructionFromUser = null;
+    static Scanner scanner = new Scanner(System.in);
 
-    ConsumerClient(){
+    private static boolean run = true;
+
+    ConsumerClient() {
 
     }
-        public static void main (String []args){
-            try(Socket socket = new Socket("localhost",8000)){
-                System.out.println("Client connected");
-                Scanner scanner = new Scanner(System.in);
 
-                InputStream input = socket.getInputStream();
-                OutputStream output = socket.getOutputStream();
-                PrintWriter writer = new PrintWriter (output,true);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+    public static void main(String[] args) throws IOException {
+        try (Socket socket = new Socket("localhost", 8000)) {
+            System.out.println("Client connected");
 
-                // reads ID
-                String ID = reader.readLine();
-                System.out.println("New process created with ID: " + ID);
-                boolean run = true;
+            InputStream input = socket.getInputStream();
+            OutputStream output = socket.getOutputStream();
+            PrintWriter writer = new PrintWriter(output, true);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
-                while(run){
-                    System.out.println(reader.readLine());
-                    System.out.println("Please select the instruction you would like to send ");
-                    String instructionfromUser = scanner.nextLine();
+            // reads ID
+            String ID = reader.readLine();
+            System.out.println("New process created with ID: " + ID);
+            String fromServer;
 
-                    switch (instructionfromUser){
-                        case "getNumItems" :
-                            writer.println(Process.NUM_ITEMS);
-                            System.out.println(reader.readLine());
-                            break;
-                        case "next item":
-                            writer.println(Process.GET_ITEM);
-                            System.out.println(reader.readLine());
-
-                        case "next item position":
-                            writer.println(Process.NEXT_ITEM_POS);
-                            System.out.println(reader.readLine());
-                        case "terminate":
-                            writer.println(Process.TERMINATE);
-                            //read the answer
-                            System.out.println(reader.readLine());
-                            run= false;
-                            break;
-                        default:
-                            writer.println("none");
-                    }
+            while (run) {
+                getMessageFromUser();
+                fromServer = reader.readLine();
+                if (fromServer.equals("RUN")) {
+                    sendInstructionToServer(writer,reader);
+                    instructionFromUser = null;
                 }
-                System.out.println(reader.readLine());
-
-
-            } catch(UnknownHostException exception){
-                System.out.printf("Server not found: %s%n", exception.getMessage());
-            } catch (IOException e){
-                System.out.printf("I/O ERROR: %s%n", e.getMessage());
             }
+            System.out.println("Process terminated");
+
         }
-}
+    }
+
+        public static String getMessageFromUser(){
+            if(instructionFromUser != null) return null;
+            System.out.println("Please select the instruction you would like to send ");
+            instructionFromUser = scanner.nextLine();
+            return instructionFromUser;
+        }
+
+        public static void sendInstructionToServer(PrintWriter writer,BufferedReader reader) throws IOException{
+            switch (instructionFromUser){
+                case "getNumItems" :
+                    writer.println(Process.NUM_ITEMS);
+                    System.out.println("The number of items is "+ reader.readLine());
+                    break;
+                case "next item":
+                    writer.println(Process.GET_ITEM);
+                    System.out.println(reader.readLine());
+
+                case "next item position":
+                    writer.println(Process.NEXT_ITEM_POS);
+                    System.out.println(reader.readLine());
+                case "terminate":
+                    writer.println(Process.TERMINATE);
+                    //read the answer
+                    System.out.println(reader.readLine());
+                    run= false;
+                    break;
+                default:
+                    writer.println("none");
+            }
+
+        }
+    }

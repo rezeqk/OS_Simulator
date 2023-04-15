@@ -16,8 +16,10 @@ public class Process implements Runnable{
     private Buffer buffer;
     private BufferedReader reader;
     private PrintWriter writer;
-    private int quantum;
     private boolean toBeTerminated;
+
+    private long startTime;
+    private long executionTime;
 
 
     public Process(int id, Socket socket, Buffer buffer) throws Exception{
@@ -29,7 +31,7 @@ public class Process implements Runnable{
         // writing the PID to the client
         writer.println(processId);
 
-        System.out.println("Process " + processId + " is created");
+//        System.out.println("Process " + processId + " is created");
     }
 
     // TODO: 2023-04-06 read and write to buffer
@@ -49,11 +51,6 @@ public class Process implements Runnable{
     }
 
     public void insertItem(int item, int pos){buffer.insertItem(item, pos);}
-    public static final void printInstruction(){
-        System.out.println("Please select one of the following instruction");
-        System.out.println("1 : " +
-                "\n");
-    }
 
     // function to write messages to client
     public void sendMessage(String message){
@@ -63,49 +60,44 @@ public class Process implements Runnable{
 
     @Override
     public void run() {
-        System.out.println("Process " + getPID() + " is scheduled");
 
-        long startTime = System.currentTimeMillis();
-        long endTime = startTime + this.quantum;
+        this.startTime = System.currentTimeMillis();
+        System.out.println("Process " + getPID() + " is scheduled on thread " + Thread.currentThread().getName());
 
-        // run the bloc for the time specified by quantum
-        while(System.currentTimeMillis() < endTime){
-            try{
-                //msg to send to the client
-                String msg = "Process with ID: " + processId + " is scheduled to run on thread " + Thread.currentThread().getName();
-                sendMessage(msg);
-
-                String instruction = reader.readLine();
-                System.out.println(instruction);
-
-                if(instruction.equals(NUM_ITEMS)){
-                    int numItems = buffer.size();
-                    writer.println(numItems);
-                }
-                else if(instruction.equals(GET_ITEM)){
-                    int item = buffer.getNextItem();
-                    writer.println(item);
-                }
-                else if(instruction.equals(NEXT_ITEM_POS)){
-                    int index = buffer.getNextPosition();
-                    writer.println(index);
-                }
-                else if(instruction.equals(TERMINATE)){
-                    toBeTerminated = true;
-                }
-            }catch(IOException e){
-                toBeTerminated = true;
-                System.out.println(e.getMessage());
+        writer.println("RUN");
+        String instruction = null;
+        try {
+            instruction = reader.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        switch (instruction) {
+            case NUM_ITEMS -> {
+                int numItems = buffer.size();
+                writer.println(numItems);
+                writer.println(executionTime());
             }
+            case GET_ITEM -> {
+                int item = buffer.getNextItem();
+                writer.println(item);
+            }
+            case NEXT_ITEM_POS -> {
+                int index = buffer.getNextPosition();
+                writer.println(index);
+            }
+            case TERMINATE -> toBeTerminated = true;
         }
 
     }
 
 
-    public void setQuantum(int quantum){
-        this.quantum = quantum;
-    }
     public boolean toBeTerminated(){
         return toBeTerminated;
+    }
+
+    //measure the execution time since the process has run
+    public long executionTime(){
+        long endTime = System.currentTimeMillis();
+        return endTime - this.startTime;
     }
 }

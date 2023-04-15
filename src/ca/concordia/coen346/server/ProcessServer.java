@@ -15,10 +15,9 @@ public class ProcessServer {
             ServerSocket socket = new ServerSocket(8000);
 
             while(true) {
-                System.out.println("Thread : " +Thread.currentThread().getName() + " -- Server waiting for connections");
+//                System.out.println("Thread : " +Thread.currentThread().getName() + " -- Server waiting for connections");
 
-                printListOfThreads();
-//                System.out.println("Server waiting for connections");
+//                printListOfThreads();
                 Socket client = socket.accept();
                 if (simulator.createProcess(client) == -1) {
                     client.sendUrgentData(-1);
