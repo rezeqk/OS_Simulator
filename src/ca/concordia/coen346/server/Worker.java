@@ -37,7 +37,7 @@ public class Worker extends Thread{
                 //run the process
                 this.currProcess.run();
 
-                printExecTime();
+//                printExecTime();
                 //if task finishes before being preempted
                 this.finishedTask = true;
                 this.prevProcess = currProcess;

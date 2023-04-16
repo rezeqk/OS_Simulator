@@ -13,7 +13,7 @@ public class Process implements Runnable{
 
     private final int processId;
 
-    private Buffer buffer;
+    private final Buffer buffer;
     private BufferedReader reader;
     private PrintWriter writer;
     private boolean toBeTerminated;
@@ -70,24 +70,27 @@ public class Process implements Runnable{
         String instruction = null;
         try {
             instruction = reader.readLine();
+            if(instruction ==null) return;
+            switch (instruction) {
+                case NUM_ITEMS -> {
+                    int numItems = buffer.size();
+                    writer.println(numItems);
+                }
+                case GET_ITEM -> {
+                    int item = buffer.getNextItem();
+                    writer.println(item);
+                }
+                case NEXT_ITEM_POS -> {
+                    int index = buffer.getNextPosition();
+                    writer.println(index);
+                }
+                case TERMINATE -> {
+                    toBeTerminated = true;
+//                    writer.println("Process will be terminated");
+                }
+            }
         } catch (IOException e) {
-            return;
 //            throw new RuntimeException(e);
-        }
-        switch (instruction) {
-            case NUM_ITEMS -> {
-                int numItems = buffer.size();
-                writer.println(numItems);
-            }
-            case GET_ITEM -> {
-                int item = buffer.getNextItem();
-                writer.println(item);
-            }
-            case NEXT_ITEM_POS -> {
-                int index = buffer.getNextPosition();
-                writer.println(index);
-            }
-            case TERMINATE -> toBeTerminated = true;
         }
 
     }

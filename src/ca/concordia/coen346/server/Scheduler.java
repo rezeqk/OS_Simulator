@@ -72,8 +72,9 @@ public class Scheduler extends Thread {
 
         // free the worker to take on other tasks
         worker.setAvailable();
-        queue.add(process);
 
+        // check if process should be returned to the ready queue
+        queue.add(process);
     }
     public Process pickNextTask(){
         // check if queue is empty
