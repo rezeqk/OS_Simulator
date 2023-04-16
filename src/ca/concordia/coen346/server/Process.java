@@ -2,7 +2,8 @@ package ca.concordia.coen346.server;
 
 
 import java.io.*;
-import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 
 public class Process implements Runnable{
 
@@ -11,48 +12,68 @@ public class Process implements Runnable{
     public final static String NEXT_ITEM_POS = "getNextItemPos";
     public final static String TERMINATE = "terminate";
 
-    private final int processId;
+    private final Integer processId;
+    private final SocketChannel clientEndpoint;
+    private final ByteBuffer readBuffer;
+    private final ByteBuffer writeBuffer;
 
+
+    // TODO: 2023-04-15 Delete this section, it's no longer needed
     private Buffer buffer;
+<<<<<<< Updated upstream
     private BufferedReader reader;
     private PrintWriter writer;
     private int quantum;
+=======
+>>>>>>> Stashed changes
     private boolean toBeTerminated;
 
 
-    public Process(int id, Socket socket, Buffer buffer) throws Exception{
-        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.writer = new PrintWriter(socket.getOutputStream(), true);
+    public Process(int id, SocketChannel socket, Buffer buffer) throws Exception{
+        int bufferSize = 1024;
+
+        this.clientEndpoint = socket;
+        System.out.println(clientEndpoint);
+        this.readBuffer = ByteBuffer.allocate(bufferSize);
+        this.writeBuffer = ByteBuffer.allocate(bufferSize);
+
         this.buffer = buffer;
         this.processId = id;
         this.toBeTerminated = false;
-        // writing the PID to the client
-        writer.println(processId);
 
+<<<<<<< Updated upstream
         System.out.println("Process " + processId + " is created");
+=======
+        // writing the PID to the client
+        writeToClient(processId.toString());
+
+>>>>>>> Stashed changes
     }
 
     // TODO: 2023-04-06 read and write to buffer
 
 
     // todo : implement the getNextItem Position 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
     public  int getPID(){
         return processId;
     }
 
+<<<<<<< Updated upstream
     public void insertItem(int item, int pos){buffer.insertItem(item);}
     public static final void printInstruction(){
         System.out.println("Please select one of the following instruction");
         System.out.println("1 : " +
                 "\n");
     }
+=======
+>>>>>>> Stashed changes
 
     // function to write messages to client
-    public void sendMessage(String message){
-        writer.println(message);
-    }
 
 
     @Override
@@ -62,6 +83,7 @@ public class Process implements Runnable{
         long startTime = System.currentTimeMillis();
         long endTime = startTime + this.quantum;
 
+<<<<<<< Updated upstream
         // run the bloc for the time specified by quantum
         while(System.currentTimeMillis() < endTime){
             try{
@@ -95,7 +117,58 @@ public class Process implements Runnable{
             }
         }
 
+=======
+        try {
+            writeToClient("RUN");
+            String instruction = null;
+
+            instruction = readFromClient();
+        switch (instruction) {
+            case NUM_ITEMS -> {
+                Integer numItems = buffer.size();
+                writeToClient(numItems.toString());
+                break;
+            }
+//            case GET_ITEM -> {
+//                int item = buffer.getNextItem();
+//                writer.println(item);
+//            }
+//            case NEXT_ITEM_POS -> {
+//                int index = buffer.getNextPosition();
+//                writer.println(index);
+//            }
+            case TERMINATE -> toBeTerminated = true;
+            default -> System.out.println("Nothing happened");
+        }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+>>>>>>> Stashed changes
     }
+
+    public String readFromClient() throws IOException{
+        int bytesRead = clientEndpoint.read((readBuffer));
+        if(bytesRead > 0){
+            readBuffer.flip();
+
+            //read from buffer
+            byte[] data = new byte[readBuffer.remaining()];
+            readBuffer.get(data);
+
+            //clear
+            readBuffer.clear();
+
+            return new String(data);
+        }
+        return null;
+    }
+
+    public void writeToClient(String message) throws IOException {
+        ByteBuffer writeBuffer = ByteBuffer.wrap(message.getBytes());
+        clientEndpoint.write(writeBuffer);
+    }
+
 
 
     public void setQuantum(int quantum){

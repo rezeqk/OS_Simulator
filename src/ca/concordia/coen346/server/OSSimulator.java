@@ -1,7 +1,13 @@
 package ca.concordia.coen346.server;
 
+<<<<<<< Updated upstream
 import java.net.Socket;
 import java.util.ArrayList;
+=======
+import java.nio.channels.SocketChannel;
+import java.util.LinkedList;
+import java.util.Queue;
+>>>>>>> Stashed changes
 
 public class OSSimulator extends Thread{
 
@@ -29,8 +35,13 @@ public class OSSimulator extends Thread{
     }
 
 
+<<<<<<< Updated upstream
     public int createProcess(Socket clientEndPoint) throws Exception {
 
+=======
+    public int createProcess(SocketChannel clientEndPoint) throws Exception {
+        if(readyQueue.size() >= MAX_PROCESSES) return -1;
+>>>>>>> Stashed changes
         int pid = pidmanager.allocatePid();
         Process process = new Process(pid, clientEndPoint, buffer);
 
@@ -79,7 +90,7 @@ public class OSSimulator extends Thread{
             //release the pid
             pidmanager.releasePid(pid);
 
-            process.sendMessage("The process that is terminated " +process.getPID()+ " the position is also "+ process.getPID());
+            process.writeToClient("The process that is terminated " +process.getPID()+ " the position is also "+ process.getPID());
             Thread.sleep(5000);
         } catch (Exception e) {
             System.out.println("Some error ocurred");

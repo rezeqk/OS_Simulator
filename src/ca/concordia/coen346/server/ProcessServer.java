@@ -1,8 +1,10 @@
 package ca.concordia.coen346.server;
 
 import java.io.IOException;
-import java.net.ServerSocket;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Map;
 
 public class ProcessServer {
@@ -12,16 +14,26 @@ public class ProcessServer {
         simulator = new OSSimulator();
         simulator.start();
         try {
-            ServerSocket socket = new ServerSocket(8000);
+//            ServerSocket socket = new ServerSocket(8000);
+            ServerSocketChannel serverSocket = ServerSocketChannel.open();
+            serverSocket.bind(new InetSocketAddress(8000));
+
+            //set blocking to false to avoid scheduling issues
+            serverSocket.configureBlocking(false);
 
             while(true) {
                 System.out.println("Thread : " +Thread.currentThread().getName() + " -- Server waiting for connections");
 
+<<<<<<< Updated upstream
                 printListOfThreads();
 //                System.out.println("Server waiting for connections");
                 Socket client = socket.accept();
+=======
+                SocketChannel client = serverSocket.accept();
+                if (client == null)  continue;
+>>>>>>> Stashed changes
                 if (simulator.createProcess(client) == -1) {
-                    client.sendUrgentData(-1);
+                    client.socket().sendUrgentData(-1);
                     client.close();
                 }
             }
