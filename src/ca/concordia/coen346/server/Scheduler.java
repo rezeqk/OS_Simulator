@@ -71,11 +71,7 @@ public class Scheduler extends Thread {
         process = (Process) worker.getPrevProcess();
 
         // free the worker to take on other tasks
-        try {
-            worker.setAvailable();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        worker.setAvailable();
         queue.add(process);
 
     }

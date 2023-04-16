@@ -57,10 +57,7 @@ public class Worker extends Thread{
     public Runnable getPrevProcess(){return this.prevProcess;}
     public Runnable getCurrProcess(){return this.currProcess;}
 
-    public void setAvailable() throws InterruptedException {
-        synchronized (lock){
-            lock.wait();
-        }
+    public void setAvailable(){
         this.isAvailable = true;
         this.finishedTask = false;
         this.prevProcess = null;

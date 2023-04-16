@@ -9,7 +9,7 @@ import java.util.Queue;
 public class OSSimulator extends Thread{
 
     private final static int MAX_PROCESSES = 20;
-    public final static int quantum = 2000;
+    public final static int quantum = 10000;
 
 
     private Queue<Process> readyQueue; //ready queue for process

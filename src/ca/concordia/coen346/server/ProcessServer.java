@@ -13,7 +13,6 @@ public class ProcessServer {
         simulator.start();
         try {
             ServerSocket socket = new ServerSocket(8000);
-
             while(true) {
 //                System.out.println("Thread : " +Thread.currentThread().getName() + " -- Server waiting for connections");
 

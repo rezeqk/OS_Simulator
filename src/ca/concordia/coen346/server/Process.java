@@ -28,6 +28,8 @@ public class Process implements Runnable{
         this.buffer = buffer;
         this.processId = id;
         this.toBeTerminated = false;
+
+        socket.setSoTimeout(OSSimulator.quantum);
         // writing the PID to the client
         writer.println(processId);
 
@@ -69,13 +71,13 @@ public class Process implements Runnable{
         try {
             instruction = reader.readLine();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return;
+//            throw new RuntimeException(e);
         }
         switch (instruction) {
             case NUM_ITEMS -> {
                 int numItems = buffer.size();
                 writer.println(numItems);
-                writer.println(executionTime());
             }
             case GET_ITEM -> {
                 int item = buffer.getNextItem();
