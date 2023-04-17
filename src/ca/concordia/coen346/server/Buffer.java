@@ -1,6 +1,8 @@
 package ca.concordia.coen346.server;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Buffer {
     private final static int BUFFER_SIZE = 10;
@@ -10,7 +12,7 @@ public class Buffer {
 
     private int index =0;
 
-
+    private final Lock lock = new ReentrantLock();
 
     public Buffer(){
 
@@ -41,14 +43,28 @@ public class Buffer {
         return index;
     }
 
-    //TODO: add code when it doesnt happen
-    public void insertItem(int item, int pos){
-        if(buffer.size() < BUFFER_SIZE){buffer.add(pos,item);}
+
+    public void insertItem(int item){
+       lock.lock();
+        try{
+        if(buffer.size() < BUFFER_SIZE){buffer.add(item);}
+        }finally{
+           lock.unlock();
+        }
+
     }
 
-    public void removeItem(int pos){
-        buffer.remove(pos);
-
+    public void removeItem(int pos)
+    {
+        lock.lock();
+        try
+        {
+            buffer.remove(pos);
+        }
+            finally
+        {
+            lock.unlock();
+        }
     }
 
 
