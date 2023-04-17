@@ -35,23 +35,23 @@ public class ProducerClient {
                 System.out.println("Please Enter The instruction you would like to write");
                 String instructionfromUser = scanner.nextLine();
 
-                switch (instructionfromUser){
-                    case "getNumitems":
+                switch (instructionfromUser) {
+                    case "getNumitems" -> {
                         writer.println(Process.NUM_ITEMS);
                         System.out.println(reader.readLine());
-                        break;
-                    case "getItemInPos":
+                    }
+                    case "getItemInPos" -> {
                         writer.println(Process.GET_ITEM);
                         System.out.println(reader.readLine());
-                        break;
-                    case "getNextItemPos":
+                    }
+                    case "getNextItemPos" -> {
                         writer.println(Process.GET_ITEM);
                         System.out.println(reader.readLine());
-                        break;
-                    case "terminate":
+                    }
+                    case "terminate" -> {
                         writer.println(Process.TERMINATE);
                         run = false;
-                        break;
+                    }
                 }
 
             }
