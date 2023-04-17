@@ -52,7 +52,7 @@ public class Process implements Runnable{
         return processId;
     }
 
-    public void insertItem(int item, int pos){buffer.insertItem(item, pos);}
+    public void insertItem(int item){buffer.insertItem(item);}
 
     // function to write messages to client
     public void sendMessage(String message){
