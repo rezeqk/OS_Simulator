@@ -1,16 +1,18 @@
 package ca.concordia.coen346.server;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Buffer {
     private final static int BUFFER_SIZE = 10;
-    private final ArrayList <Integer> buffer;
+    private ArrayList <Integer> buffer;
     private int out;
     private int count;
 
     private int index =0;
 
-
+    private final Lock lock = new ReentrantLock();
 
     public Buffer(){
 
@@ -27,10 +29,16 @@ public class Buffer {
     }
 
     public int getNextItem(){
-        int temp =0;
-        temp = buffer.get(0);
-        buffer.remove(index);
-        return temp;
+        lock.lock();
+        try{
+            int temp =0;
+            int pos = buffer.size() -1;
+            temp = buffer.get(pos);
+            buffer.remove(pos);
+            return temp;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void setIn(int pos){
@@ -41,10 +49,30 @@ public class Buffer {
         return index;
     }
 
-    //TODO: add code when it doesnt happen
+
     public void insertItem(int item){
-        if(buffer.size() < BUFFER_SIZE){
-            buffer.add(item);
+        lock.lock();
+        try{
+            if(buffer.size() < BUFFER_SIZE){
+                buffer.add(item);
+                index++;
+            }
+        }finally{
+            lock.unlock();
+        }
+
+    }
+
+    public void removeItem(int pos)
+    {
+        lock.lock();
+        try
+        {
+            buffer.remove(pos);
+        }
+        finally
+        {
+            lock.unlock();
         }
     }
 
