@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Buffer {
     private final static int BUFFER_SIZE = 10;
-    private ArrayList <Integer> buffer;
+    private final ArrayList <Integer> buffer;
     private int out;
     private int count;
 
@@ -28,7 +28,7 @@ public class Buffer {
 
     public int getNextItem(){
         int temp =0;
-        temp = buffer.get(index);
+        temp = buffer.get(0);
         buffer.remove(index);
         return temp;
     }
@@ -42,13 +42,10 @@ public class Buffer {
     }
 
     //TODO: add code when it doesnt happen
-    public void insertItem(int item, int pos){
-        if(buffer.size() < BUFFER_SIZE){buffer.add(pos,item);}
-    }
-
-    public void removeItem(int pos){
-        buffer.remove(pos);
-
+    public void insertItem(int item){
+        if(buffer.size() < BUFFER_SIZE){
+            buffer.add(item);
+        }
     }
 
 

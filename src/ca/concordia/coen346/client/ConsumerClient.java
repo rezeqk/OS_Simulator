@@ -6,7 +6,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-//TODO :  Add event listener
 public class ConsumerClient {
     private static String instructionFromUser = null;
     private static boolean responseHasNotArrived = true;
@@ -36,11 +35,15 @@ public class ConsumerClient {
                 getMessageFromUser();
                 if (reader.readLine().equals("RUN")) {
                     sendInstructionToServer(writer,reader);
+
+                    //reset
                     instructionFromUser = null;
+                    responseHasNotArrived = true;
                 }
 
                 //wait for the response
                 while(responseHasNotArrived){
+                    System.out.println("Message has not arrived");
                     String msg =  reader.readLine();
                     if(msg.equals("RUN"))continue;
                     System.out.println(msg);
@@ -60,24 +63,16 @@ public class ConsumerClient {
         return instructionFromUser;
     }
 
-    public static void sendInstructionToServer(PrintWriter writer,BufferedReader reader) throws IOException{
-        switch (instructionFromUser){
-            case "getNumItems" :
-                writer.println(Process.NUM_ITEMS);
-                break;
-            case "next item":
-                writer.println(Process.GET_ITEM);
-                System.out.println(reader.readLine());
-
-            case "next item position":
-                writer.println(Process.NEXT_ITEM_POS);
-                System.out.println(reader.readLine());
-            case "terminate":
+    public static void sendInstructionToServer(PrintWriter writer,BufferedReader reader) {
+        switch (instructionFromUser) {
+            case "getNumItems" -> writer.println(Process.NUM_ITEMS);
+            case "next item" -> writer.println(Process.GET_ITEM);
+            case "next item position" -> writer.println(Process.NEXT_ITEM_POS);
+            case "terminate" -> {
                 writer.println(Process.TERMINATE);
-                run= false;
-                break;
-            default:
-                writer.println("none");
+                run = false;
+            }
+            default -> writer.println("none");
         }
 
     }

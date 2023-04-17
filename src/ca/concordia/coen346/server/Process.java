@@ -10,16 +10,16 @@ public class Process implements Runnable{
     public final static String GET_ITEM = "getItemInPos";
     public final static String NEXT_ITEM_POS = "getNextItemPos";
     public final static String TERMINATE = "terminate";
+    public final static String PRODUCE =  "add";
 
     private final int processId;
 
     private final Buffer buffer;
-    private BufferedReader reader;
-    private PrintWriter writer;
+    private final BufferedReader reader;
+    private final PrintWriter writer;
     private boolean toBeTerminated;
 
     private long startTime;
-    private long executionTime;
 
 
     public Process(int id, Socket socket, Buffer buffer) throws Exception{
@@ -33,26 +33,14 @@ public class Process implements Runnable{
         // writing the PID to the client
         writer.println(processId);
 
-//        System.out.println("Process " + processId + " is created");
     }
 
-    // TODO: 2023-04-06 read and write to buffer
-
-
-    // todo : implement the getNextItem Position 
-//    public void writingtoBuffer(){
-//
-//    }
-//
-//    public String readingfromBuffer(){
-//        return null;
-//    }
 
     public  int getPID(){
         return processId;
     }
 
-    public void insertItem(int item, int pos){buffer.insertItem(item, pos);}
+    public void insertItem(int item){buffer.insertItem(item);}
 
     // function to write messages to client
     public void sendMessage(String message){
@@ -71,6 +59,7 @@ public class Process implements Runnable{
         try {
             instruction = reader.readLine();
             if(instruction ==null) return;
+
             switch (instruction) {
                 case NUM_ITEMS -> {
                     int numItems = buffer.size();
@@ -84,13 +73,19 @@ public class Process implements Runnable{
                     int index = buffer.getNextPosition();
                     writer.println(index);
                 }
-                case TERMINATE -> {
-                    toBeTerminated = true;
-//                    writer.println("Process will be terminated");
+                case PRODUCE -> {
+                    String num = reader.readLine();
+                    if(num == null) return;
+
+                    Integer numberToAdd = Integer.parseInt(num);
+                    buffer.insertItem(numberToAdd);
+                    int numItems= buffer.size();
+                    writer.println("The number items is now : " + numItems);
                 }
+                case TERMINATE -> toBeTerminated = true;
             }
         } catch (IOException e) {
-//            throw new RuntimeException(e);
+            //do nothing
         }
 
     }
